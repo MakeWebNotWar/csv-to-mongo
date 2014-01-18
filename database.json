@@ -1,0 +1,9 @@
+{
+  "adapter":"mongo",
+  "database":"opendata"
+  // "username":"your_user_name",
+  // "password":"your_password",
+  // "host":"hostname",
+  // "port":"port_number"
+  // "apikey":"apikey"
+}
