@@ -37,13 +37,20 @@ module OpenData
     end
 
     def build_attributes
+      exclude_attribute = %w[database collection path]
       attributes = {}
+      
       instance_variables.each do |variable|
         name = variable.to_s
         name = name[1..name.size]
         value = instance_variable_get variable
         attributes[name] = value     
       end
+
+      exclude_attribute.each do |attribute|
+        attributes.delete(attribute)
+      end
+
       attributes
     end
 

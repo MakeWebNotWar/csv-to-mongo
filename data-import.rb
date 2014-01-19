@@ -59,7 +59,6 @@ module OpenData
         item = JSON.parse(@raw_data)
         item = keys_to_symbol(item)
         documents.push(item)
-
       end
 
       @documents = documents
@@ -82,9 +81,6 @@ module OpenData
     end
     
     def create_documents
-
-      # $stdout.flush
-      # $stdout.write "\rFile: #{file} of #{@documents.size}"
       file = 0
       progressbar = ProgressBar.create(
         :title => "Uploaded", 
@@ -93,7 +89,6 @@ module OpenData
       system "clear" unless system "cls"
       @documents.each do |document|
         if create_document(document)
-
           progressbar.increment
         else
           return "Error"
