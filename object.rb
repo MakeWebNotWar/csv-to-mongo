@@ -5,17 +5,11 @@ module OpenData
     
     include OpenData::Connection
 
-    PATH = "databases/odata/collections/marriages/documents"
+    PATH = "collections/fluclinics/documents"
 
     def initialize(object, options={})
       # build_object(object)
       build_object(object)
-      
-      if options[:apikey]
-        @mongohqapikey = options[:apikey]
-      else
-        @mongohqapikey = ENV['MONGOHQ_APIKEY'] ||= nil
-      end
     end
 
     def build_object(object)
@@ -34,21 +28,17 @@ module OpenData
       instance_variables.each do |variable|
         name = variable.to_s
         name = name[1..name.size]
-        if name != "mongohqapikey"
-          value = instance_variable_get variable
-          attributes[name] = value
-        end
+        value = instance_variable_get variable
+        attributes[name] = value     
       end
       attributes
     end
 
     def save
       
-      path = @id ? "#{PATH}/#{@id}" : "#{PATH}" 
+      path = "#{PATH}" 
       
-      document = {}
-      # document[:safe] = true
-      document[:document] = build_attributes
+      document = build_attributes
 
       options = {
         path: path,
@@ -57,11 +47,6 @@ module OpenData
 
       request = post(options)
 
-      # if request.success?
-      #   true
-      # else
-      #   false
-      # end
     end
 
   end
