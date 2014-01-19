@@ -9,10 +9,6 @@ module OpenData
       def initialize(path, options={})
         @path = path.split("/")
 
-        @database     = ENV['MONGO_DATABASE']
-        @collection   = @path[1]
-        @document     = @path[3]
-
         @method   = options[:method]
         @body = options[:document]
 
@@ -20,6 +16,9 @@ module OpenData
         @port     = options[:port]      ||= ENV['MONGO_PORT']
         @username = options[:username]  ||= ENV['MONGO_USERNAME']
         @password = options[:password]  ||= ENV['MONGO_PASSWORD']
+
+        generate_endpoints
+
       end
 
       def run
@@ -28,7 +27,7 @@ module OpenData
         case @method
         when :post
           if has_collections?
-            if @collection && is_document? && @document.nil?
+            if @collection && has_documents? && @document.nil?
               response = request.collection("#{@collection}").insert(@body)
             end
           end
@@ -45,13 +44,25 @@ module OpenData
         request.authenticate(@username, @password) unless (@username.nil? || @password.nil?)
         request
       end
-
-      def has_collections?
-        @path[0] === "collections" ? true : false
+        
+      def generate_endpoints
+        if @path[0] === "databases"
+          @database = @path[1]
+          @collection = @path[3] ||=nil
+          @document = @path[5] ||= nil
+        elsif @path[0] === "collections"
+          @database = ENV['MONGO_DATABASE']
+          @collection = @path[1]
+          @document = @path[3] ||= nil
+        end
       end
 
-      def is_document?
-        @path[2] === "documents" ? true : false
+      def has_collections?
+        @path.include?("collections") ? true : false
+      end
+
+      def has_documents?
+        @path.include?("documents") ? true : false
       end
 
     end
